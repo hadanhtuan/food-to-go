@@ -1,0 +1,92 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: postgres
+    restart: always
+    image: postgres:latest
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PWD}
+      POSTGRES_HOST: ${PG_HOST}
+      POSTGRES_DB: ${PG_NAME}
+      PGDATA: /data/postgres
+    volumes:
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - postgres:/data/postgres
+    ports:
+      - ${PG_PORT}:5432
+    networks:
+      - docker_ftgo
+
+  cache:
+    container_name: redis_cache
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '${CACHE_PORT}:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${CACHE_PWD}
+    volumes:
+      - cache:/data
+    networks:
+      - docker_ftgo
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - ${AMQP_PORT}:5672
+      - ${AMQP_UI_PORT}:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=${AMQP_USER}
+      - RABBITMQ_DEFAULT_PASS=${AMQP_PWD}
+    networks:
+      - docker_ftgo
+
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.9.2
+    container_name: es01
+    restart: always
+    environment:
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+      - "bootstrap.memory_lock=true"
+      - "ELASTIC_USER=${ES_USER}"
+      - "ELASTIC_PASSWORD=${ES_PWD}"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elastic:/usr/share/elasticsearch/data
+    ports:
+      - ${ES_PORT}:9200
+    networks:
+      - docker_ftgo
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:8.9.2
+    restart: always
+    environment:
+      - ELASTICSEARCH_HOSTS=http://es01:9200
+    ports:
+      - ${KIBANA_PORT}:5601
+    depends_on:
+      - es01
+    networks:
+      - docker_ftgo
+
+networks:
+  docker_ftgo:
+    external: true
+
+volumes:
+  cache:
+    driver: local
+  postgres:
+    driver: local
+  elastic:
+    driver: local
