@@ -7,6 +7,8 @@ import lombok.*;
 @Table(name = "order")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Order extends BaseEntity {
     @Id
@@ -17,8 +19,15 @@ public class Order extends BaseEntity {
     public String userId;
 
     @Column(name = "address_id")
-    public Long addressId;
+    public String addressId;
 
-    @Column(name = "is_active")
-    public Boolean isActive;
+    @Column(name = "test")
+    public String test;
+
+    @Column(name = "email_address", nullable = false)
+    public String email;
+
+
+    @Column(name = "phone_number")
+    public int phoneNumber;
 }
