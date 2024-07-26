@@ -1,6 +1,7 @@
 package com.ftgo.order.model;
 
 
+import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,14 +16,18 @@ import java.time.ZonedDateTime;
 @Setter
 public class BaseEntity {
     @CreationTimestamp
-    private ZonedDateTime createdOn;
+    @Column(name = "created_at")
+    private ZonedDateTime createdAt;
 
     @CreatedBy
+    @Column(name = "created_by")
     private String createdBy;
 
     @UpdateTimestamp
-    private ZonedDateTime lastModifiedOn;
+    @Column(name = "updated_at")
+    private ZonedDateTime updatedOn;
 
     @LastModifiedBy
-    private String lastModifiedBy;
+    @Column(name = "updated_by")
+    private String updatedBy;
 }
