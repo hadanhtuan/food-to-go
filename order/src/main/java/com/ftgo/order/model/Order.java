@@ -1,5 +1,6 @@
 package com.ftgo.order.model;
 
+import com.ftgo.order.model.enumeration.EOrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,21 +14,28 @@ import lombok.*;
 public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    public Long id;
+    private Long id;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "shipping_address_id", referencedColumnName = "id")
+    private ShippingAddress shippingAddressId;
 
     @Column(name = "user_id")
-    public String userId;
+    private String userId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_status")
+    private EOrderStatus orderStatus;
 
     @Column(name = "address_id")
-    public String addressId;
+    private String addressId;
 
     @Column(name = "test")
-    public String test;
+    private String test;
 
     @Column(name = "email_address", nullable = false)
-    public String email;
-
+    private String email;
 
     @Column(name = "phone_number")
-    public int phoneNumber;
+    private int phoneNumber;
 }

@@ -1,8 +1,10 @@
 package com.ftgo.order.model;
 
 
+import com.ftgo.order.listener.CustomAuditingEntityListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.EntityListeners;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -13,6 +15,8 @@ import java.time.ZonedDateTime;
 @MappedSuperclass
 @Getter
 @Setter
+@EntityListeners(CustomAuditingEntityListener.class)
+//error use entity listener when run migrate
 public class BaseEntity {
     @CreationTimestamp
     @Column(name = "created_at")

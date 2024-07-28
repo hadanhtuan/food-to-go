@@ -8,7 +8,6 @@ import (
 )
 
 func main() {
-
 	app := &sdk.App{
 		Name: "Restaurant Service",
 	}
