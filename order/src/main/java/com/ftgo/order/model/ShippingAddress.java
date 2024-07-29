@@ -32,19 +32,19 @@ public class ShippingAddress extends BaseEntity {
     private String city;
 
     @Column(name = "district_id")
-    private String districtId;
+    private Long districtId;
 
     @Column(name = "district_name")
     private String districtName;
 
     @Column(name = "state_or_province_id")
-    private String stateOrProvinceId;
+    private Long stateOrProvinceId;
 
     @Column(name = "state_or_province_name")
     private String stateOrProvinceName;
 
     @Column(name = "country_id")
-    private String countryId;
+    private Long countryId;
 
     @Column(name = "country_name")
     private String countryName;

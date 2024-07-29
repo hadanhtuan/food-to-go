@@ -1,8 +1,13 @@
 package com.ftgo.order.model;
 
+import com.ftgo.order.model.enumeration.EDeliveryMethod;
 import com.ftgo.order.model.enumeration.EOrderStatus;
+import com.ftgo.order.model.enumeration.EPaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
+import java.util.Set;
 
 @Entity
 @Table(name = "order")
@@ -18,7 +23,10 @@ public class Order extends BaseEntity {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "shipping_address_id", referencedColumnName = "id")
-    private ShippingAddress shippingAddressId;
+    private ShippingAddress shippingAddress;
+
+    @OneToMany(mappedBy = "orderId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    Set<OrderDetail> orderDetails;
 
     @Column(name = "user_id")
     private String userId;
@@ -27,15 +35,17 @@ public class Order extends BaseEntity {
     @Column(name = "order_status")
     private EOrderStatus orderStatus;
 
-    @Column(name = "address_id")
-    private String addressId;
+    @Enumerated(EnumType.STRING)
+    @Column(name="delivery_method")
+    private EDeliveryMethod deliveryMethod;
 
-    @Column(name = "test")
-    private String test;
+    @Enumerated(EnumType.STRING)
+    @Column(name="payment_status")
+    private EPaymentStatus paymentStatus;
 
-    @Column(name = "email_address", nullable = false)
-    private String email;
+    @Column(name = "delivery_fee")
+    private BigDecimal deliveryFee;
 
-    @Column(name = "phone_number")
-    private int phoneNumber;
+    @Column(name = "total_price")
+    private BigDecimal totalPrice;
 }
