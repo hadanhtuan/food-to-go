@@ -12,7 +12,7 @@ import java.util.HashMap;
 @NoArgsConstructor
 @Builder
 public class BaseResponse<T> {
-    private EAPIStatus status;
+    private int status;
     private T data;
     private String message;
     private int total;

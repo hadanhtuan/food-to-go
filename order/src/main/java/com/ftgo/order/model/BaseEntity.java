@@ -28,7 +28,8 @@ public class BaseEntity {
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private ZonedDateTime updatedOn;
+    private ZonedDateTime updatedAt;
+
 
     @LastModifiedBy
     @Column(name = "updated_by")

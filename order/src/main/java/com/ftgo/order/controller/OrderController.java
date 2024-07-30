@@ -4,11 +4,9 @@ import com.ftgo.order.dto.request.CreateOrderDTO;
 import com.ftgo.order.dto.response.BaseResponse;
 import com.ftgo.order.model.Order;
 import com.ftgo.order.service.OrderService;
+import com.ftgo.order.utils.APIStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
