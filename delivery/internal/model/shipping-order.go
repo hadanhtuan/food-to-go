@@ -1,9 +1,7 @@
 package model
 
 import (
-	"property-service/internal/model/enum"
 	"time"
-
 	"github.com/hadanhtuan/go-sdk/database/postgres"
 	"gorm.io/gorm"
 )

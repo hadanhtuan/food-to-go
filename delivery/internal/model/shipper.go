@@ -1,7 +1,6 @@
 package model
 
 import (
-	"delivery-service/internal/model/enum"
 	"time"
 
 	"github.com/hadanhtuan/go-sdk/database/postgres"
