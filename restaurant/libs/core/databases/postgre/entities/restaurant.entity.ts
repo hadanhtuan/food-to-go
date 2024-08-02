@@ -1,7 +1,13 @@
 import { Check, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { Kitchen } from './kitchen.entity';
-import { RestaurantStatus } from '@libs/common/enums';
+
+enum RestaurantStatus {
+  CLOSE = 'CLOSE',
+  OPEN = 'OPEN',
+  BAN = 'BAN',
+}
+
 
 @Entity({ name: 'restaurant' })
 @Check(`"open_hour" >= 0 AND "open_hour" < 24`)
@@ -16,16 +22,16 @@ export class Restaurant extends BaseEntity {
   @Column({ name: 'address', type: 'varchar', nullable: false })
   address: string;
 
-  @Column({ name: 'address', type: 'varchar', nullable: false })
+  @Column({ name: 'lat', type: 'varchar', nullable: false })
   lat: string;
 
-  @Column({ name: 'address', type: 'varchar', nullable: false })
+  @Column({ name: 'long', type: 'varchar', nullable: false })
   long: string;
 
-  @Column({ name: 'address', type: 'varchar', nullable: false })
+  @Column({ name: 'manager_id', type: 'varchar', nullable: false })
   managerId: string;
 
-  @Column({ name: 'address', type: 'varchar', nullable: false })
+  @Column({ name: 'manager_name', type: 'varchar', nullable: false })
   managerName: string;
 
   @Column({ name: 'number_employees', type: 'bigint', default: 0 })

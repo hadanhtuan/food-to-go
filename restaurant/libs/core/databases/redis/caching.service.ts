@@ -1,4 +1,4 @@
-import { LoggerService } from '@libs/module/logger';
+import { LoggerService } from '@libs/utils/module/logger';
 import {
   HttpException,
   HttpStatus,
@@ -46,7 +46,7 @@ export class CacheService implements OnModuleInit, OnApplicationShutdown {
 
   async createInstance(): Promise<RedisClient> {
     try {
-      const options = this.configService.get<RedisClientOptions>('redis');
+      const options = this.configService.get<RedisClientOptions>('cache');
       const instance = createClient(options);
 
       this.redisClient = instance;
@@ -54,7 +54,6 @@ export class CacheService implements OnModuleInit, OnApplicationShutdown {
       return instance;
     } catch (err) {
       this.logger.error(err);
-      return null;
     }
   }
 
@@ -64,7 +63,6 @@ export class CacheService implements OnModuleInit, OnApplicationShutdown {
       return this.redisClient;
     } catch (err) {
       this.logger.error(err);
-      return null;
     }
   }
 
@@ -89,7 +87,7 @@ export class CacheService implements OnModuleInit, OnApplicationShutdown {
 
   async get(key: string): Promise<string> {
     try {
-      const value = await this.redisClient.get(key);
+      const value = (await this.redisClient.get(key)) || '';
       return value;
     } catch (error) {
       this.logger.error(error);

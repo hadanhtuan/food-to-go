@@ -217,14 +217,23 @@ If there are any additional notes or comments that you would like to add, mentio
 - For NestJS:
   - Run latest migration
 ```bash
-$ yarn run migration:run -- -d <path to file database ormconfig.ts>
+$ yarn run migration:run -- -d libs/core/databases/postgre/ormconfig.ts
 ```
 
   - Generate new migration
 ```bash
-$ yarn run migration:generate libs/core/databases/<database>/migrations/<name> -d libs/core/databases/<database>/ormconfig.ts
+$ yarn run migration:generate libs/core/databases/postgre/migrations/<name> -d libs/core/databases/postgre/ormconfig.ts
 ```
   - Run again migration which have just created
+
+- For Java Spring Boot:
+  - Latest migration will be run when launch program
+
+  - Generate new migration
+```bash
+$ mvn compile liquibase:diff
+```
+  - Launch program
 
 ## VI. Setup
 
@@ -249,39 +258,6 @@ $ yarn run migration:generate libs/core/databases/<database>/migrations/<name> -
 
 ```bash
 $ yarn install
-```
-
-### c. Running the app
-
-- Init database if not exists
-  - Run docker-compose file to init database and dependencies
-
-- Run migrations for init database table
-  - Command
-```bash
-$ yarn run migration:run -- -d <path to file database ormconfig.ts>
-```
-
-- Run command generate migration if needed
-```bash
-$ yarn run migration:generate libs/core/databases/<database>/migrations/<name> -d libs/core/databases/<database>/ormconfig.ts
-```
-
-- Revert migration ( pop the latest migration )
-```bash
-$ yarn run migration:revert -- -d <path to file database ormconfig.ts>
-```
-
-
-```bash
-# development
-$ yarn run start <?service name>
-
-# watch mode
-$ yarn run start:dev <?service name>
-
-# production mode
-$ yarn run start:prod <?service name>
 ```
 
 ## VII. Prerequisites
