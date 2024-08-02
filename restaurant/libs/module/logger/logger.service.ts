@@ -12,15 +12,15 @@ export class LoggerService extends ConsoleLogger {
     this.context = context;
   }
 
-  log(message: any) {
+  log(message: unknown) {
     super.log(message, this.context);
   }
 
-  error(message: any) {
+  error(message: unknown) {
     super.error(message, '', this.context);
   }
 
-  warn(message: any) {
+  warn(message: unknown) {
     super.warn(message, this.context);
   }
 }
