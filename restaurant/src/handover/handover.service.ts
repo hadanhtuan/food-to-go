@@ -6,9 +6,9 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
 @Injectable()
-export class RestaurantService extends PostgreRepository {
+export class HandoverService extends PostgreRepository {
   logger: LoggerService;
-  private readonly serviceName: string = RestaurantService.name;
+  private readonly serviceName: string = HandoverService.name;
 
   constructor(
     @InjectDataSource(DbName.Postgre)
