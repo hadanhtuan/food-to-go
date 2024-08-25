@@ -1,3 +1,16 @@
+NOTE: 
+
+payment: java
+
+order: nest
+
+restaurant: nest, redis
+
+api-gateway: nestjs, keycloak(sso), circuit pattern, restful
+
+delivery: golang, postgre, procedure, cron, go-sdk
+
+
 # Project specified requirements/conventions
 
 Both new and current team members working on this project should apply the following suggestions as much as possible
@@ -29,23 +42,23 @@ Both new and current team members working on this project should apply the follo
     |
     |__common // Folder for common usage
     |  |
-    |  |__constants
+    |  |__constant
     |  |  |
     |  |  |__!database.constant.ts // Database config constants
     |  |
-    |  |__enums
+    |  |__enum
     |  |  |
     |  |  |__!database-config.enum.ts // Database config enums
     |  |
-    |  |__interfaces
+    |  |__interface
     |  |
-    |  |__types
+    |  |__type
     |  |
     |  |__index.ts // Export everything in folder
     |
     |__config // Folder config/env
     |  |
-    |  |__envs // Folder env
+    |  |__env // Folder env
     |  |
     |  |__configuration.ts // Export config from env
     |  |
@@ -54,30 +67,36 @@ Both new and current team members working on this project should apply the follo
     |__core // Folder integrate, service communication
     |  |
     |  |__database
-    |     |
-    |     |__postgres // SQL database
-    |     |  |
-    |     |  |__entities // entities folder
-    |     |  |
-    |     |  |__migrations // migrations folder
-    |     |  |
-    |     |  |__index.ts // export everything from folder
-    |     |  |
-    |     |  |__ormconfig.ts // Config file to specific DataSource for migrating database
-    |     |
-    |     |__redis // Redis database
-    |
+    |  |  |
+    |  |  |__postgre // SQL database
+    |  |  |  |
+    |  |  |  |__entity // entities folder
+    |  |  |  |
+    |  |  |  |__migration // migrations folder
+    |  |  |  |
+    |  |  |  |__index.ts // export everything from folder
+    |  |  |  |
+    |  |  |  |__ormconfig.ts // Config file to specific DataSource for migrating database
+    |  |  |
+    |  |  |__redis // Redis database
+    |  |
     |  |__client
     |  |
     |  |__index.ts // Export everything in folder
     |
     |__utils // Folder utilities, common module/middleware usage
     |  |
-    |  |__helpers
+    |  |__helper
     |  |
-    |  |__middlewares
+    |  |__middleware
+    |  |  |__guard
+    |  |  |__interceptor
+    |  |  |__filter
+    |  |  |__exception
     |  |
-    |  |__modules
+    |  |__module
+    |  |  |__logger
+    |  |  |__orm
     |  |
     |  |__index.ts // Export everything in folder
   ```
@@ -129,7 +148,6 @@ Both new and current team members working on this project should apply the follo
     |
     |__model
     |  |__delivery.go // model
-    |
     |
     main.go
   ```

@@ -2,10 +2,10 @@ import { dbModuleMapping } from '@libs/common/constant';
 import { IEntitiesMapMetadata } from '@libs/common/type';
 import * as entities from '@libs/core/database/postgre/entity';
 
-export function mapEntities(entities: IEntitiesMapMetadata) {
+export function mapEntities(db: IEntitiesMapMetadata) {
   const map = [];
-  for (const database in entities) {
-    const getValue = entities[database];
+  for (const database in db) {
+    const getValue = db[database];
     const findModule = dbModuleMapping[database] || null;
     if (!findModule) console.debug('Could not found implement ORM');
     map.push(findModule.forFeature(getValue, database));

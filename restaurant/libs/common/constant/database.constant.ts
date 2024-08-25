@@ -1,4 +1,3 @@
-import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DbConfig, DbName } from '../enum';
 

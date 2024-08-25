@@ -1,7 +1,7 @@
 package main
 
 import (
-	"delivery/api"
+	"delivery/controller"
 	"delivery/internal/config"
 	"github.com/hadanhtuan/go-sdk"
 	"github.com/hadanhtuan/go-sdk/common"
@@ -15,13 +15,12 @@ func main() {
 	startAppWithRoute(app)
 }
 
-
 func startAppWithRoute(app *sdk.App) {
 	server := app.NewHTTPServer(config.AppConfig.Server.Host, config.AppConfig.Server.Port)
 
-	server.AddHandler(common.HTTPMethod.GET, "restaurant", api.GetRestaurant)
-	server.AddHandler(common.HTTPMethod.POST, "restaurant/create", api.GetRestaurant)
-	server.AddHandler(common.HTTPMethod.DELETE, "restaurant/delete", api.GetRestaurant)
+	server.AddHandler(common.HTTPMethod.GET, "restaurant", controller.GetRestaurant)
+	server.AddHandler(common.HTTPMethod.POST, "restaurant/create", controller.GetRestaurant)
+	server.AddHandler(common.HTTPMethod.DELETE, "restaurant/delete", controller.GetRestaurant)
 
 	app.Start()
 }

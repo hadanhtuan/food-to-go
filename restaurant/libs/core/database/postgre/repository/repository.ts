@@ -12,7 +12,7 @@ import {
 } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
-export class PostgreRepository implements IBaseRepository {
+export class PostgresRepository implements IBaseRepository {
   async create<T>(
     dataSource: DataSource,
     entity: EntityTarget<T>,

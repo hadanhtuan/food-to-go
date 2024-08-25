@@ -86,7 +86,6 @@ export const config = {
       },
     },
     restaurantService: {
-      transport: Transport.TCP,
       options: {
         host: process.env.RESTAURANT_HOST || '0.0.0.0',
         port: process.env.RESTAURANT_PORT || 4002,

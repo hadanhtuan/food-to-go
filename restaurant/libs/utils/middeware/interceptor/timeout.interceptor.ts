@@ -1,3 +1,4 @@
+import { APIStatus } from '@libs/common/enum';
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import {
   catchError,
@@ -6,7 +7,6 @@ import {
   timeout,
   TimeoutError,
 } from 'rxjs';
-import { APIStatus } from '@libs/common/enum';
 
 export class TimeoutInterceptor implements NestInterceptor {
   intercept(
