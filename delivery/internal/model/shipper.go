@@ -1,10 +1,9 @@
 package model
 
 import (
-	"time"
-
 	"github.com/hadanhtuan/go-sdk/database/postgres"
 	"gorm.io/gorm"
+	"time"
 )
 
 type Shipper struct {
@@ -18,7 +17,7 @@ func (Shipper) TableName() string {
 	return "shipper"
 }
 
-var ShipperDB = &orm.Instance{
+var ShipperDB = &pg.Instance{
 	TableName: "shipper",
 	Model:     &Shipper{},
 }
