@@ -1,12 +1,12 @@
 export enum DbConfig {
   Redis = 'db.redis',
-  Postgre = 'db.postgre',
+  Postgres = 'db.postgres',
   // Mongo = 'db.mongo',
 }
 
 export enum DbName {
   Redis = 'redis',
-  Postgre = 'postgre',
+  Postgres = 'postgres',
   // Mongo = 'mongo',
 }
 

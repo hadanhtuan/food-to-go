@@ -1,4 +1,5 @@
 import process from 'node:process';
+import { ConfigService } from '@nestjs/config';
 
 export type TOrm = {
   type: string;
@@ -65,3 +66,5 @@ export type TConfiguration = {
     restaurantService: TService;
   };
 };
+
+export type TConfigService = ConfigService<TConfiguration>;

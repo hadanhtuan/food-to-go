@@ -64,7 +64,7 @@ Both new and current team members working on this project should apply the follo
     |  |
     |  |__index.ts // Export everything in folder
     |
-    |__core // Folder integrate, service communication
+    |__core // Folder integrate, communicate communication
     |  |
     |  |__database
     |  |  |
@@ -325,7 +325,7 @@ export const dbConfig: Partial<Record<DbName, DbConfig>> = {
 - Build gateway image and service image
 
 ```bash
-$ docker build . -t <image name> -f ./apps/<service name>/Dockerfile
+$ docker build . -t <image name> -f ./apps/<communicate name>/Dockerfile
 ```
 
 - Create env file as sample.env in service structure
@@ -336,11 +336,11 @@ $ docker build . -t <image name> -f ./apps/<service name>/Dockerfile
 version: '3.8'
 services:
   <service name>:
-      container_name: <service name>
+      container_name: <communicate name>
       restart: always
       image: <image-service>
       ...
-      env_file: <path to service's env>
+      env_file: <path to communicate's env>
 ...
 ```
 

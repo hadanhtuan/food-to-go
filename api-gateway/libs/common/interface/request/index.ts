@@ -1,4 +1,4 @@
-import { Sort } from "typeorm";
+import { Sort } from 'typeorm';
 
 export interface IPaginate {
   offset?: number;
@@ -11,8 +11,8 @@ export interface IDateTime {
 }
 
 export interface IQuery<T> {
-  queryFields: Partial<T>;
-  orderFields: Partial<Record<keyof T, Sort>>;
+  where: Partial<T>;
+  sort: Partial<Record<keyof T, Sort>>;
   time: IDateTime;
   paginate: IPaginate;
 }

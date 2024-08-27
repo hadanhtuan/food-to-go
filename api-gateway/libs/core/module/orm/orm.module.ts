@@ -1,12 +1,12 @@
 import { dbModuleMapping } from '@libs/common/constant';
-import { DbConfig, DbName } from '@libs/common/enum';
+import { EDbConfig, EDbName } from '@libs/common/enum';
 import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 type options = {
-  dbConfigMapping: Partial<Record<DbName, DbConfig>>;
-  getConfig: (cf: DbConfig) => (a: ConfigService) => any;
+  dbConfigMapping: Partial<Record<EDbName, EDbConfig>>;
+  getConfig: (cf: EDbConfig) => (a: ConfigService) => any;
 };
 
 @Module({})

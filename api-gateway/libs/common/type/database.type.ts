@@ -1,3 +1,3 @@
-import { DbName } from '../enum';
+import { EDbName } from '../enum';
 
-export type IEntitiesMapMetadata = Partial<Record<DbName, any[]>>;
+export type IEntitiesMapMetadata = Partial<Record<EDbName, any[]>>;

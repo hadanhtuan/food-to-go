@@ -1,16 +1,16 @@
-export enum DbConfig {
+export enum EDbConfig {
   Redis = 'db.redis',
-  Postgre = 'db.postgre',
+  Postgres = 'db.postgres',
   // Mongo = 'db.mongo',
 }
 
-export enum DbName {
+export enum EDbName {
   Redis = 'redis',
-  Postgre = 'postgre',
+  Postgres = 'postgres',
   // Mongo = 'mongo',
 }
 
-export enum Sort {
+export enum ESort {
   Asc = 'ASC',
   Desc = 'DESC',
 }

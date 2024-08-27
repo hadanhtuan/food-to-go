@@ -1,12 +1,12 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DbConfig, DbName } from '../enum';
+import { EDbConfig, EDbName } from '../enum';
 
-export const dbConfigMapping: Partial<Record<DbName, DbConfig>> = {
-  [DbName.Postgre]: DbConfig.Postgre,
+export const dbConfigMapping: Partial<Record<EDbName, EDbConfig>> = {
+  [EDbName.Postgres]: EDbConfig.Postgres,
   // [DbName.Mongo]: DbConfig.Mongo,
 };
 
 export const dbModuleMapping = {
-  [DbName.Postgre]: TypeOrmModule,
+  [EDbName.Postgres]: TypeOrmModule,
   // [DbName.Mongo]: MongooseModule,
 };

@@ -1,216 +1,102 @@
-import { LoggerService } from '@libs/utils/module/logger';
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  OnApplicationShutdown,
-  OnModuleInit,
-} from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { isNumber } from 'lodash';
-import { RedisClientOptions, createClient } from 'redis';
-export type RedisClient = ReturnType<typeof createClient>;
+import { Inject, Injectable } from '@nestjs/common';
+import { REDIS_CACHE_CLIENT } from '@libs/common/constant';
+import { RedisClient } from './caching.module';
+import { NonNullableType, RedisCachePayload } from '@libs/common/type';
+import { validate } from 'class-validator';
+import { instanceToPlain } from 'class-transformer';
+import { LoggerService } from '@libs/core/module/logger';
 
 @Injectable()
-export class CacheService implements OnModuleInit, OnApplicationShutdown {
-  private redisClient: RedisClient;
+export class CacheService {
   private callingMaps: Map<string, Promise<unknown>> = new Map();
+
   constructor(
-    private readonly configService: ConfigService,
+    @Inject(REDIS_CACHE_CLIENT)
+    private readonly redisClient: RedisClient,
     private readonly logger: LoggerService,
   ) {
     this.logger.setContext(CacheService.name);
   }
 
-  async onModuleInit() {
-    this.redisClient = await this.getInstance();
+  async set<T>(
+    key: string,
+    payload: NonNullableType<T>,
+    ttl: number,
+  ): Promise<void> {
+    const cachePayload = new RedisCachePayload();
+    cachePayload.data = payload;
+    const isValid = await validate(cachePayload);
 
-    this.redisClient.on('error', (err) =>
-      this.logger.error(`Redis Error: ${err}`),
-    );
-    this.redisClient.on('connect', () => this.logger.log('Redis connected'));
-    this.redisClient.on('reconnecting', () =>
-      this.logger.warn('Redis reconnecting'),
-    );
-    this.redisClient.on('ready', () => {
-      this.logger.log('Redis is ready!');
+    if (isValid.length) {
+      // throw new Error(ERROR_MESSAGE.INSTANCE_VALIDATION_FAILED);
+    }
+    const plain = instanceToPlain(cachePayload, {
+      exposeDefaultValues: true,
     });
 
-    await this.redisClient.connect();
+    const result = await this.redisClient.setex(
+      key,
+      ttl,
+      JSON.stringify(plain),
+    );
   }
 
-  async onApplicationShutdown() {
-    this.callingMaps.clear();
-    await this.redisClient.disconnect();
+  async get<T>(key: string, immediateDelete: boolean = false): Promise<T> {
+    const getter = immediateDelete
+      ? this.redisClient.getdel.bind(this.redisClient)
+      : this.redisClient.get.bind(this.redisClient);
+
+    const rawData: string = await getter(key);
+    const recordData: RedisCachePayload<T> = JSON.parse(rawData);
+    return recordData.data;
   }
 
-  async createInstance(): Promise<RedisClient> {
-    try {
-      const options = this.configService.get<RedisClientOptions>('cache');
-      const instance = createClient(options);
+  async exists(key: string): Promise<boolean> {
+    const isExists = await this.redisClient.exists([key]);
+    return isExists > 0;
+  }
 
-      this.redisClient = instance;
+  async delete(keys: Array<string>): Promise<number> {
+    return this.redisClient.del(keys);
+  }
 
-      return instance;
-    } catch (err) {
-      this.logger.error(err);
+  async deleteWithPrefix(prefix: string): Promise<number> {
+    const keysDelete = await this.redisClient.keys(`${prefix}*`);
+    let result = 0;
+    if (keysDelete.length > 0) {
+      result = await this.redisClient.del(keysDelete);
     }
+
+    return result;
   }
 
-  async getInstance(): Promise<RedisClient> {
-    try {
-      if (!this.redisClient) this.redisClient = await this.createInstance();
-      return this.redisClient;
-    } catch (err) {
-      this.logger.error(err);
-    }
-  }
-
-  async set<T>(key: string, payload: string | T, ttl?: number) {
-    try {
-      let value = payload;
-      if (typeof value !== 'string') value = JSON.stringify(payload);
-
-      const result =
-        isNumber(ttl) && ttl > 0
-          ? await this.redisClient.set(key, value, { EX: ttl })
-          : await this.redisClient.set(key, value, { KEEPTTL: true });
-      return result;
-    } catch (error) {
-      this.logger.error(error);
-      throw new HttpException(
-        error?.message || null,
-        error?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  async get(key: string): Promise<string> {
-    try {
-      const value = (await this.redisClient.get(key)) || '';
-      return value;
-    } catch (error) {
-      this.logger.error(error);
-      throw new HttpException(
-        error?.message || null,
-        error?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  async delete(key: string | string[]) {
-    try {
-      await this.redisClient.del(key);
-    } catch (error) {
-      this.logger.error(error);
-      throw new HttpException(
-        error?.message || null,
-        error?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  async getOrSet<T>(
+  async increase(
     key: string,
-    getData: () => Promise<T>,
-    ttl?: number,
-  ): Promise<T> {
-    let value: string | T = await this.get(key);
+    increaseBy = 1,
+    willExpired: boolean = true,
+    ttl: number = 86400,
+  ): Promise<number> {
+    const result = await this.redisClient.incrby(key, increaseBy);
 
-    if (value !== null) return JSON.parse(value);
-    if (this.callingMaps.has(key))
-      return this.callingMaps.get(key) as Promise<T>;
-
-    try {
-      const promise: Promise<T> = getData();
-      this.callingMaps.set(key, promise);
-      value = await promise;
-    } finally {
-      this.callingMaps.delete(key);
+    if (willExpired && result === increaseBy) {
+      await this.redisClient.expire(key, ttl);
     }
 
-    await this.set(key, value, ttl);
-    return value;
+    return result;
   }
 
-  async deleteWithPrefix(prefix: string) {
-    try {
-      const keysDelete = await this.redisClient.keys(`${prefix}*`);
-      let result = 0;
-      if (keysDelete.length > 0) {
-        result = await this.redisClient.del(keysDelete);
-      }
+  async decrease(
+    key: string,
+    decreaseBy = 1,
+    willExpired: boolean = true,
+    ttl: number = 86400,
+  ): Promise<number> {
+    const result = await this.redisClient.decrby(key, decreaseBy);
 
-      return result;
-    } catch (error) {
-      this.logger.error(error);
-      throw new HttpException(
-        error?.message || null,
-        error?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    if (willExpired && result === -decreaseBy) {
+      await this.redisClient.expire(key, ttl);
     }
-  }
 
-  async increase(key: string, value = 1): Promise<number> {
-    try {
-      const check = await this.redisClient.get(key);
-
-      if (!check) {
-        await this.set(key, 1);
-        return 1;
-      }
-
-      const result = await this.redisClient.incrBy(key, value);
-
-      return result;
-    } catch (error) {
-      this.logger.error(error);
-      throw new HttpException(
-        error?.message || null,
-        error?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  async decrease(key: string, value = 1): Promise<number> {
-    try {
-      const check = await this.redisClient.get(key);
-
-      if (!check) {
-        await this.set(key, 0);
-        return 0;
-      }
-
-      const result = await this.redisClient.decrBy(key, value);
-
-      return result;
-    } catch (error) {
-      this.logger.error(error);
-      throw new HttpException(
-        error?.message || null,
-        error?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  async getKeysValues(prefix: string): Promise<Map<string, string>> {
-    try {
-      let map = new Map<string, string>();
-
-      const keys = await this.redisClient.keys(`${prefix}*`);
-      if (keys.length === 0) return map;
-
-      const values = await this.redisClient.mGet(keys);
-
-      map = new Map(keys.map((key, index) => [key, values[index]]));
-
-      return map;
-    } catch (error) {
-      this.logger.error(error);
-      throw new HttpException(
-        error?.message || null,
-        error?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return result;
   }
 }

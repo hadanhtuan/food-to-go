@@ -1,28 +1,20 @@
-import {TimeoutInterceptor} from '@libs/utils/middeware/interceptor';
-import {ResponseInterceptor} from '@libs/utils/middeware/interceptor/response.interceptor';
-import {ConfigService} from '@nestjs/config';
-import {NestFactory} from '@nestjs/core';
-import {MainModule} from './main.module';
+import { NestFactory } from '@nestjs/core';
+import { MainModule } from './main.module';
+import { TimeoutInterceptor } from '@libs/core/middeware/interceptor';
+import { MicroserviceOptions } from '@nestjs/microservices';
+import { configuration } from '@libs/config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(MainModule);
-  const configService = app.get(ConfigService);
-
-  const config = configService.get('services.restaurantService');
-
-  app.enableCors({
-    origin: '*',
-    allowedHeaders: '*',
-    methods: ['GET', 'POST', 'DELETE'],
-  });
-
-  app.useGlobalInterceptors(
-    new ResponseInterceptor(),
-    new TimeoutInterceptor(),
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    MainModule,
+    configuration.services.restaurantService,
   );
-  // app.init();
-  // app.connectMicroservice<MicroserviceOptions>(config);
-  // app.startAllMicroservices();
-  await app.listen(config.options.port)
+
+  app.useGlobalInterceptors(new TimeoutInterceptor());
+
+  // app.useGlobalFilters(new AllExceptionsFilter(app));
+
+  await app.listen();
 }
+
 bootstrap();
