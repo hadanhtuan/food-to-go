@@ -9,7 +9,6 @@ export const getStatusCode = <T>(exception: T): APIStatus => {
 };
 
 export const getErrorMessage = <T>(exception: T): Array<T> | T => {
-  console.log(exception);
   return exception instanceof HttpException
     ? exception['response']['message']
     : exception['message'];

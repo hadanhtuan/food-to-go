@@ -1,26 +1,20 @@
-import { Injectable } from '@nestjs/common';
-import { CreateDeliveryDto } from './dto/create-delivery.dto';
-import { UpdateDeliveryDto } from './dto/update-delivery.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { IResponse } from '@libs/common/interface/response';
+import { getErrorResponse } from '@libs/utils';
+import { configuration } from '@libs/config';
+import { getRestUrl } from '@libs/utils/service.util';
+import { EServiceName } from '@libs/common/enum';
+import { RestService } from '@libs/core/module/communicate';
 
 @Injectable()
 export class DeliveryService {
-  create(createDeliveryDto: CreateDeliveryDto) {
-    return 'This action adds a new delivery';
-  }
-
-  findAll() {
-    return `This action returns all delivery`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} delivery`;
-  }
-
-  update(id: number, updateDeliveryDto: UpdateDeliveryDto) {
-    return `This action updates a #${id} delivery`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} delivery`;
+  async getDeliveries(): Promise<IResponse> {
+    try {
+      const url = getRestUrl(EServiceName.DeliveryService, 'delivery');
+      const res = await RestService.post(url, { test: 123 });
+      return res;
+    } catch (error) {
+      return getErrorResponse(error);
+    }
   }
 }

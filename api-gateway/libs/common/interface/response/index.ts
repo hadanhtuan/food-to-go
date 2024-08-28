@@ -1,4 +1,4 @@
-import { APIStatus } from "@libs/common/enum/api-status.enum";
+import { APIStatus } from '@libs/common/enum';
 
 export interface IResponse<T = unknown> {
   status: APIStatus;

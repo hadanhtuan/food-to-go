@@ -18,7 +18,9 @@ func main() {
 func startAppWithRoute(app *sdk.App) {
 	server := app.NewHTTPServer(config.AppConfig.Server.Host, config.AppConfig.Server.Port)
 
-	server.AddHandler(common.HTTPMethod.GET, "restaurant", controller.GetRestaurant)
+	server.AddHandler(common.HTTPMethod.POST, "delivery", controller.GetDeliveries)
+
+	server.AddHandler(common.HTTPMethod.POST, "restaurant", controller.GetRestaurant)
 	server.AddHandler(common.HTTPMethod.POST, "restaurant/create", controller.GetRestaurant)
 	server.AddHandler(common.HTTPMethod.DELETE, "restaurant/delete", controller.GetRestaurant)
 

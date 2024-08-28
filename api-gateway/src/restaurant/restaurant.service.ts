@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { RPCService } from '@libs/core/module/communicate';
 import { getErrorResponse } from '@libs/utils';
 import { IResponse } from '@libs/common/interface/response';
@@ -12,12 +12,10 @@ export class RestaurantService {
     try {
       const res = await RPCService.sendRequest(
         EServiceName.RestaurantService,
-        { test: 123 },
         'restaurant',
+        { test: 123 },
       );
 
-      console.log(res);
-      throw new NotFoundException('not found anything');
       return res;
     } catch (error) {
       return getErrorResponse(error);

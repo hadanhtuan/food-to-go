@@ -1,11 +1,9 @@
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
-  HttpException,
-  HttpStatus,
-  INestMicroservice,
+  Catch,
+  ExceptionFilter,
   INestApplication,
+  INestMicroservice,
 } from '@nestjs/common';
 import { AbstractHttpAdapter, HttpAdapterHost } from '@nestjs/core';
 import { getErrorMessage } from '@libs/utils';
@@ -21,8 +19,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
     this.httpAdapter = httpAdapter;
   }
   catch(exception: unknown, host: ArgumentsHost): void {
-    console.log(exception);
-
     const ctx = host.switchToHttp();
     const errors = getErrorMessage(exception);
 
@@ -30,9 +26,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const responseBody = {
       status: httpStatus,
-      message: exception['message']['response']['message'],
+      message: errors,
     };
-    console.log(responseBody);
 
     this.httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }

@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { get } from 'lodash';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { APIStatus } from '@libs/common/enum';
+import { IResponse } from '@libs/common/interface/response';
 
 const HandleResponseError = (
   error: AxiosError,
@@ -12,50 +13,53 @@ const HandleResponseError = (
 };
 
 export class RestService {
-  static async get<T>(route: string, configs?: AxiosRequestConfig): Promise<T> {
+  static async get<T>(
+    route: string,
+    configs?: AxiosRequestConfig,
+  ): Promise<IResponse<T>> {
     return axios
       .get(route, configs)
       .then((data) => get(data, 'data'))
       .catch((error: AxiosError) => HandleResponseError(error, route, 'GET'));
   }
 
-  static async post<P, R>(
+  static async post<T, P>(
     route: string,
     payload?: P,
     configs?: AxiosRequestConfig,
-  ): Promise<R> {
+  ): Promise<IResponse<T>> {
     return axios
       .post(route, payload, configs)
       .then((data) => get(data, 'data'))
       .catch((error: AxiosError) => HandleResponseError(error, route, 'POST'));
   }
 
-  static async patch<P, R>(
+  static async patch<T, P>(
     route: string,
     payload?: P,
     configs?: AxiosRequestConfig,
-  ): Promise<R> {
+  ): Promise<IResponse<T>> {
     return axios
       .patch(route, payload, configs)
       .then((data) => get(data, 'data'))
       .catch((error: AxiosError) => HandleResponseError(error, route, 'PATCH'));
   }
 
-  static async put<P, R>(
+  static async put<T, P>(
     route: string,
     payload?: P,
     configs?: AxiosRequestConfig,
-  ): Promise<R> {
+  ): Promise<IResponse<T>> {
     return axios
       .put(route, payload, configs)
       .then((data) => get(data, 'data'))
       .catch((error: AxiosError) => HandleResponseError(error, route, 'PUT'));
   }
 
-  static async delete<R>(
+  static async delete<T>(
     route: string,
     configs?: AxiosRequestConfig,
-  ): Promise<R> {
+  ): Promise<IResponse<T>> {
     return axios
       .delete(route, configs)
       .then((data) => get(data, 'data'))

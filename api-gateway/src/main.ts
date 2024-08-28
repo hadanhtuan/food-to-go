@@ -1,16 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import {
-  GatewayResponseInterceptor,
-  TimeoutInterceptor,
-} from '@libs/core/middeware/interceptor';
+import { GatewayResponseInterceptor } from '@libs/core/middeware/interceptor';
 import {
   BadRequestException,
   ValidationError,
   ValidationPipe,
 } from '@nestjs/common';
 import { errorFormatter } from '@libs/utils';
-import { AllExceptionsFilter } from '@libs/core/middeware/filter';
+import { AllExceptionsFilter, StatusFilter } from '@libs/core/middeware/filter';
 import { configuration } from '@libs/config';
 
 async function bootstrap() {
@@ -23,10 +20,7 @@ async function bootstrap() {
   });
 
   // interceptor
-  app.useGlobalInterceptors(
-    new TimeoutInterceptor(),
-    new GatewayResponseInterceptor(),
-  );
+  app.useGlobalInterceptors(new GatewayResponseInterceptor());
 
   // pipe
   app.useGlobalPipes(
@@ -41,7 +35,8 @@ async function bootstrap() {
   );
 
   // filter => still bug, define on each controller
-  // app.useGlobalFilters(new AllExceptionsFilter(app));
+  app.useGlobalFilters(new AllExceptionsFilter(app));
+  app.useGlobalFilters(new StatusFilter());
 
   await app.listen(configuration.serverPort);
 }

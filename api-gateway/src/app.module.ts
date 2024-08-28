@@ -5,5 +5,6 @@ import { DeliveryModule } from './delivery/delivery.module';
 
 @Module({
   imports: [OrderModule, RestaurantModule, DeliveryModule],
+  providers: [],
 })
 export class AppModule {}
