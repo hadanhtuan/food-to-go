@@ -30,6 +30,7 @@ export class RestaurantService extends PostgresRepository {
   async getRestaurant(): Promise<IResponse> {
     try {
       // await sleep(7000);
+      throw new ServiceUnavailableException('bad request');
       return {
         data: [{ test: 123 }],
         message: 'Query restaurant successfully',

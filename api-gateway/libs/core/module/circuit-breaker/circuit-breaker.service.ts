@@ -37,7 +37,7 @@ export class CircuitBreakerService {
         if (this.requestCount < this.halfOpenThresholdCount) {
           return true;
         }
-        if (this.requestCount > this.halfOpenThresholdCount) {
+        if (this.requestCount >= this.halfOpenThresholdCount) {
           if (this.calculateFailurePercent() < this.halfOpenThresholdPercent) {
             this.changeState(ECircuitBreakerState.CLOSED);
             return true;
@@ -55,7 +55,6 @@ export class CircuitBreakerService {
     if (this.state === ECircuitBreakerState.CLOSED) {
       // reset if over range time
       if (timePassed > this.intervalCheckTime * 1.2) {
-        console.log('reset > 1.2');
         this.reset();
       }
 
@@ -66,8 +65,6 @@ export class CircuitBreakerService {
         if (this.calculateFailurePercent() > this.failureThresholdPercent) {
           this.changeState(ECircuitBreakerState.OPEN);
         } else {
-          console.log('reset < 1.2');
-
           this.reset();
         }
       }
@@ -93,17 +90,12 @@ export class CircuitBreakerService {
 
     switch (state) {
       case ECircuitBreakerState.CLOSED:
-        console.log('close circuit');
-
         this.nextAttempt = 0;
         break;
       case ECircuitBreakerState.OPEN:
-        console.log('open circuit');
         this.nextAttempt = Date.now() + this.circuitCloseTime;
         break;
       case ECircuitBreakerState.HALF_OPEN:
-        console.log('half open circuit');
-
         this.nextAttempt = 0;
         break;
     }

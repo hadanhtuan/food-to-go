@@ -23,7 +23,6 @@ export class GatewayResponseInterceptor implements NestInterceptor {
       //timeout
       timeout(5000),
       catchError((err) => {
-        // console.log('catch error');
         if (err instanceof TimeoutError) {
           return throwError(() => ({
             statusCode: APIStatus.Timeout,
@@ -31,7 +30,6 @@ export class GatewayResponseInterceptor implements NestInterceptor {
           }));
         }
 
-        console.log(err);
         return throwError(() => err);
       }),
 

@@ -17,13 +17,10 @@ export class HttpExceptionsFilter implements ExceptionFilter {
   // constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   catch(exception: HttpException, host: ArgumentsHost): void {
-    console.log('exception ');
-
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
     const errors = getErrorMessage(exception);
-    console.log(exception);
 
     const statusCode = exception.getStatus();
 
