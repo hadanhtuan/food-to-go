@@ -1,7 +1,11 @@
 import { DbName } from '@libs/common/enum/database.enum';
 import { PostgresRepository } from '@libs/core/database/postgre';
 import { LoggerService } from '@libs/core/module/logger';
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { IResponse } from '@libs/common/interface/response';
@@ -25,13 +29,16 @@ export class RestaurantService extends PostgresRepository {
 
   async getRestaurant(): Promise<IResponse> {
     try {
+      // await sleep(7000);
       return {
         data: [{ test: 123 }],
         message: 'Query restaurant successfully',
-        status: APIStatus.Created,
+        statusCode: APIStatus.Created,
       };
     } catch (error) {
       return getErrorResponse(error);
     }
   }
 }
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));

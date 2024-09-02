@@ -23,35 +23,22 @@ export class GatewayResponseInterceptor implements NestInterceptor {
       //timeout
       timeout(5000),
       catchError((err) => {
+        // console.log('catch error');
         if (err instanceof TimeoutError) {
           return throwError(() => ({
-            status: APIStatus.Timeout,
+            statusCode: APIStatus.Timeout,
             message: 'Request timeout',
           }));
         }
+
+        console.log(err);
+        return throwError(() => err);
       }),
 
       // throw status exception to status filter
       map((data: IResponse) => {
-        //throw to status filter
-        switch (data.status) {
-          case APIStatus.Ok:
-            throw new StatusException(data, APIStatus.Ok);
-          case APIStatus.Created:
-            throw new StatusException(data, APIStatus.Created);
-          case APIStatus.BadRequest:
-            throw new StatusException(data, APIStatus.BadRequest);
-          case APIStatus.ServerError:
-            throw new StatusException(data, APIStatus.ServerError);
-          case APIStatus.Forbidden:
-            throw new StatusException(data, APIStatus.Forbidden);
-          case APIStatus.Timeout:
-            throw new StatusException(data, APIStatus.Timeout);
-          case APIStatus.Unauthorized:
-            throw new StatusException(data, APIStatus.Unauthorized);
-          case APIStatus.NotFound:
-            throw new StatusException(data, APIStatus.NotFound);
-        }
+        // throw to status.filter.ts to modify API Status
+        throw new StatusException(data, data.statusCode);
       }),
     );
   }
