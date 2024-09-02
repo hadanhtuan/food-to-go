@@ -1,4 +1,4 @@
-import { APIStatus } from '@libs/common/enum/api-status.enum';
+import { APIStatus } from '@libs/common/enum';
 import { IBaseRepository } from '@libs/common/interface/postgre';
 import { IPaginate } from '@libs/common/interface/request';
 import { IResponse } from '@libs/common/interface/response';
@@ -24,7 +24,7 @@ export class PostgresRepository implements IBaseRepository {
       const record = await repo.save<T>(payload as T);
       const response: IResponse<T> = {
         data: record,
-        status: APIStatus.Created,
+        statusCode: APIStatus.Created,
         total: 1,
       };
       return response;
@@ -47,7 +47,7 @@ export class PostgresRepository implements IBaseRepository {
       await repo.update(where, payload);
 
       const response: IResponse<T> = {
-        status: APIStatus.Ok,
+        statusCode: APIStatus.Ok,
         total: 1,
       };
 
@@ -72,14 +72,14 @@ export class PostgresRepository implements IBaseRepository {
 
       if (!record) {
         return {
-          status: APIStatus.NotFound,
+          statusCode: APIStatus.NotFound,
           total: 0,
-        } as IResponse<T>;
+        };
       }
 
       const response: IResponse<T> = {
         data: record,
-        status: APIStatus.Ok,
+        statusCode: APIStatus.Ok,
         total: 1,
       };
       return response;
@@ -108,14 +108,14 @@ export class PostgresRepository implements IBaseRepository {
 
       if (!records) {
         return {
-          status: APIStatus.NotFound,
+          statusCode: APIStatus.NotFound,
           total: 0,
-        } as IResponse<T[]>;
+        };
       }
 
       const response: IResponse<T[]> = {
         data: records,
-        status: APIStatus.Ok,
+        statusCode: APIStatus.Ok,
         total,
       };
       return response;

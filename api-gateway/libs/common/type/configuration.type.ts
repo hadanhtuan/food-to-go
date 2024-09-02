@@ -34,6 +34,13 @@ export type TConfiguration = {
     time: string | number;
     limit: string | number;
   };
+  circuitBreaker: {
+    failureThresholdPercent: number;
+    halfOpenThresholdPercent: number;
+    halfOpenThresholdCount: number;
+    circuitCloseTime: number;
+    intervalCheckTime: number;
+  };
   aws: {
     config: {
       region: string;

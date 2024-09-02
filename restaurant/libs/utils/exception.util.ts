@@ -17,7 +17,7 @@ export const getErrorMessage = <T>(exception: T): Array<T> | T => {
 export const getErrorResponse = (error: any): IResponse => {
   return {
     message: error?.message,
-    status: error?.status || APIStatus.ServerError,
+    statusCode: error?.status || APIStatus.ServerError,
     data: error?.data,
   };
 };

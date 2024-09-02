@@ -2,33 +2,31 @@ import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
+  HttpException,
   INestApplication,
   INestMicroservice,
 } from '@nestjs/common';
 import { AbstractHttpAdapter, HttpAdapterHost } from '@nestjs/core';
 import { getErrorMessage } from '@libs/utils';
 import { APIStatus } from '@libs/common/enum';
+import { Response } from 'express';
 
-@Catch()
-export class AllExceptionsFilter implements ExceptionFilter {
+@Catch(HttpException)
+export class HttpExceptionsFilter implements ExceptionFilter {
   private httpAdapter: AbstractHttpAdapter;
   // constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
-  constructor(private readonly app: INestMicroservice | INestApplication) {
-    const { httpAdapter } = app.get(HttpAdapterHost);
-    this.httpAdapter = httpAdapter;
-  }
-  catch(exception: unknown, host: ArgumentsHost): void {
+  catch(exception: HttpException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+
     const errors = getErrorMessage(exception);
 
-    const httpStatus = exception['message']['status'] || APIStatus.ServerError;
+    const statusCode = exception.getStatus();
 
-    const responseBody = {
-      status: httpStatus,
+    response.status(statusCode).json({
       message: errors,
-    };
-
-    this.httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
+      statusCode,
+    });
   }
 }

@@ -7,8 +7,12 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { errorFormatter } from '@libs/utils';
-import { AllExceptionsFilter, StatusFilter } from '@libs/core/middeware/filter';
+import {
+  HttpExceptionsFilter,
+  StatusFilter,
+} from '@libs/core/middeware/filter';
 import { configuration } from '@libs/config';
+import { CircuitBreakerInterceptor } from '@libs/core/middeware/interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,7 +24,10 @@ async function bootstrap() {
   });
 
   // interceptor
-  app.useGlobalInterceptors(new GatewayResponseInterceptor());
+  app.useGlobalInterceptors(
+    new GatewayResponseInterceptor(),
+    new CircuitBreakerInterceptor(),
+  );
 
   // pipe
   app.useGlobalPipes(
@@ -35,8 +42,7 @@ async function bootstrap() {
   );
 
   // filter => still bug, define on each controller
-  app.useGlobalFilters(new AllExceptionsFilter(app));
-  app.useGlobalFilters(new StatusFilter());
+  app.useGlobalFilters(new HttpExceptionsFilter(), new StatusFilter());
 
   await app.listen(configuration.serverPort);
 }

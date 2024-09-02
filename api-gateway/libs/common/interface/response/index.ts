@@ -1,7 +1,7 @@
 import { APIStatus } from '@libs/common/enum';
 
 export interface IResponse<T = unknown> {
-  status: APIStatus;
+  statusCode: APIStatus;
   message?: string;
   header?: Map<string, string>;
   data?: T;

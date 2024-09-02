@@ -1,7 +1,6 @@
 import { TConfiguration, DeepReadonly } from '@libs/common/type';
 import * as process from 'node:process';
 import * as path from 'path';
-import { Transport } from '@nestjs/microservices';
 
 require('dotenv').config({ path: path.join(process.cwd(), '.env') });
 
@@ -12,6 +11,16 @@ export const configuration: DeepReadonly<TConfiguration> = {
   requestLimit: {
     time: process.env.LIMIT_REQUEST_PER_SECOND || 60,
     limit: process.env.LIMIT_REQUEST || 100,
+  },
+  circuitBreaker: {
+    failureThresholdPercent:
+      Number(process.env.CIRCUIT_FAILURE_THRESHOLD_PERCENT) || 50,
+    halfOpenThresholdPercent:
+      Number(process.env.CIRCUIT_HALF_OPEN_THRESHOLD_PERCENT) || 50,
+    halfOpenThresholdCount:
+      Number(process.env.CIRCUIT_HALF_OPEN_REQUEST_THRESHOLD_COUNT) || 10,
+    circuitCloseTime: Number(process.env.CIRCUIT_CLOSE_TIME) || 10000,
+    intervalCheckTime: Number(process.env.CIRCUIT_INTERVAL_CHECK_TIME) || 6000,
   },
   aws: {
     config: {

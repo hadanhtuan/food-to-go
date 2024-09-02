@@ -7,4 +7,5 @@ export enum APIStatus {
   NotFound = 404,
   Timeout = 408,
   ServerError = 500,
+  ServiceUnavailable = 503,
 }
